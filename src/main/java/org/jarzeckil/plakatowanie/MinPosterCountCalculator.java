@@ -1,36 +1,49 @@
 package org.jarzeckil.plakatowanie;
 
 import java.io.BufferedReader;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.PriorityQueue;
+import java.util.Queue;
 
 /**
  *
  * @author jarzeckil
  */
-public class Plakatowanie {
+public class MinPosterCountCalculator {
 
     int n;
-    int[] widths;
     int[] heights;
 
-    public int solve() {
+    public void solve() {
         readData();
+        System.out.println(getMinPosterCount());
+    }
 
-        return 0;
+    private int getMinPosterCount() {
+        int p = 0;
+        Queue<Integer> stack = new PriorityQueue<>((num1, num2) -> num2.compareTo(num1));
+
+        for (int i = 0; i < n; i++) {
+            while (!stack.isEmpty() && stack.peek() > heights[i]) {
+                stack.remove();
+            }
+            if (stack.isEmpty() || stack.peek() < heights[i]) {
+                stack.add(heights[i]);
+                p++;
+            }
+        }
+        return p;
     }
 
     private void readData() {
 
         try {
-            //BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
-            BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream("in/pla0.in")));
+            BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
             String line;
 
             line = reader.readLine();
             n = Integer.parseInt(line);
-            widths = new int[n];
             heights = new int[n];
 
             int i = 0;
@@ -38,9 +51,7 @@ public class Plakatowanie {
 
                 String[] parts = line.split(" ", 2);
 
-                widths[i] = Integer.parseInt(parts[0]);
                 heights[i] = Integer.parseInt(parts[1]);
-
                 i++;
             }
         } catch (IOException e) {
@@ -49,7 +60,7 @@ public class Plakatowanie {
     }
 
     public static void main(String[] args) {
-        Plakatowanie p = new Plakatowanie();
+        MinPosterCountCalculator p = new MinPosterCountCalculator();
         p.solve();
     }
 }
